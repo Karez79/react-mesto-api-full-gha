@@ -44,29 +44,27 @@ function App() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!isLoggedIn) {
-        auth
-          .getUser()
-          .then((result) => {
-            Promise.all([api.getProfile(), api.getInitialCards()])
-              .then(([userData, cards]) => {
-                setCurrentUser(userData);
-                setCards(cards);
-    
-                setLoggedIn(true);
-                setEmail(result.email);
-                navigate("/");
-              })
-              .catch((err) => {
-                console.log(err);
-              });
+    auth
+      .getUser()
+      .then((result) => {
+        Promise.all([api.getProfile(), api.getInitialCards()])
+          .then(([userData, cards]) => {
+            setCurrentUser(userData);
+            setCards(cards);
+
+            setLoggedIn(true);
+            setEmail(result.email);
+            navigate("/");
           })
           .catch((err) => {
             console.log(err);
           });
-    }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
       // eslint-disable-next-line
-  }, []);
+  }, [isLoggedIn]);
 
   function handleEditAvatarClick() {
     setEditAvatarPopup(true);
@@ -188,8 +186,16 @@ function App() {
   }
 
   function onSignout(user) {
-    setLoggedIn(false);
-    navigate("/signin");
+    auth
+    .logout()
+      .then((result) => {
+        setLoggedIn(false);
+        navigate("/signin");
+      })
+      .catch((err) => {
+        openInfoTooltipPopupOpen(false);
+        console.log(err);
+      });
   }
 
   return (

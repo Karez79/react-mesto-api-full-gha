@@ -40,6 +40,11 @@ const login = (req, res, next) => {
   }).catch((e) => next(e));
 };
 
+const logout = (req, res) => {
+  res.clearCookie('accessToken');
+  res.json({ message: 'Successful logout' }).send(200);
+};
+
 const getCurrentUserInfo = (req, res, next) => {
   User.findById(req.user._id)
     .orFail(() => {
@@ -139,5 +144,6 @@ module.exports = {
   updateProfile,
   updateAvatar,
   login,
+  logout,
   getCurrentUserInfo,
 };

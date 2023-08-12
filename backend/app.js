@@ -19,7 +19,6 @@ const rateLimit = require('./services/limiter');
 const app = express();
 
 app.use(helmet());
-app.use(rateLimit);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -29,6 +28,7 @@ app.use(cors({
 }));
 
 app.use(reqLogger);
+app.use(rateLimit);
 app.use('/crash-test', () => {
   setTimeout(() => {
     throw new Error('Сервер сейчас упадёт');
@@ -49,6 +49,7 @@ app.post('/signup', celebrate({
     password: Joi.string().required(),
   }),
 }), userController.createUser);
+app.post('/logout', userController.logout);
 app.use('/users', authMiddleware, usersRouter);
 app.use('/cards', authMiddleware, cardsRouter);
 app.all('*', (req, res, next) => {
@@ -65,5 +66,3 @@ app.listen(PORT, () => {
   // Если всё работает, консоль покажет, какой порт приложение слушает
   console.log(`App listening on port ${PORT}`);
 });
-
-//  TODO: update profile другого человека

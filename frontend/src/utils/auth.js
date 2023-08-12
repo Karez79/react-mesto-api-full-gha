@@ -41,7 +41,6 @@ class Auth {
     }
 
     signin(profile) {
-        console.log(this._headers);
         return this._request(`signin`, {
             method: "POST",
             headers: {
@@ -52,6 +51,16 @@ class Auth {
                 password: profile.password,
                 email: profile.email,
             })
+        });
+    }
+
+    logout() {
+        return this._request(`logout`, {
+            method: "POST",
+            headers: {
+                ...this._headers,
+            },
+            credentials: 'include'
         });
     }
 }
